@@ -1,0 +1,101 @@
+package presentation.viewModel.product;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+import domain.model.product.ProductModel;
+import domain.usecase.product.AddProductUsecase;
+import domain.usecase.product.DeleteProductUseCase;
+import domain.usecase.product.GetProductById;
+import domain.usecase.product.ReadProductUseCase;
+import domain.usecase.product.UpdateProductUsecase;
+
+public class ProductViewModel {
+    private final AddProductUsecase addProductUsecase;
+    private final DeleteProductUseCase deleteProductUseCase;
+    private final UpdateProductUsecase updateProductUsecase;
+    private final ReadProductUseCase readProductUseCase;
+    private final GetProductById getProductByIdUsecase;
+
+    // Konstruktor untuk inisialisasi dependensi yang diperlukan oleh
+    // ProductViewModel
+    public ProductViewModel(AddProductUsecase addProductUsecase,
+            DeleteProductUseCase deleteProductUseCase,
+            UpdateProductUsecase updateProductUsecase,
+            ReadProductUseCase readProductUseCase,
+            GetProductById getProductByIdUsecase) {
+        this.addProductUsecase = addProductUsecase;
+        this.deleteProductUseCase = deleteProductUseCase;
+        this.updateProductUsecase = updateProductUsecase;
+        this.readProductUseCase = readProductUseCase;
+        this.getProductByIdUsecase = getProductByIdUsecase;
+    }
+
+    /**
+     * Metode untuk menambahkan produk.
+     * 
+     * @param product objek ProductModel yang berisi detail produk yang akan
+     *                ditambahkan
+     * @return CompletableFuture yang menunjukkan proses penambahan produk
+     */
+    public CompletableFuture<Void> addProduct(ProductModel product) {
+        return addProductUsecase.call(product)
+                .thenRun(() -> System.out.println("Produk berhasil ditambahkan: " + product.getName()));
+    }
+
+    /**
+     * Metode untuk menghapus produk berdasarkan ID.
+     * 
+     * @param productId ID produk yang akan dihapus
+     * @return CompletableFuture yang menunjukkan proses penghapusan produk
+     */
+    public CompletableFuture<Void> deleteProduct(int productId) {
+        return deleteProductUseCase.call(productId)
+                .thenRun(() -> System.out.println("Produk dengan ID " + productId + " berhasil dihapus."));
+    }
+
+    /**
+     * Metode untuk memperbarui informasi produk.
+     * 
+     * @param product objek ProductModel yang berisi detail produk yang akan
+     *                diperbarui
+     * @return CompletableFuture yang menunjukkan proses pembaruan produk
+     */
+    public CompletableFuture<Void> updateProduct(ProductModel product) {
+        return updateProductUsecase.call(product)
+                .thenRun(() -> System.out.println("Produk berhasil diperbarui: " + product.getName()));
+    }
+
+    /**
+     * Metode untuk mengambil daftar semua produk.
+     * 
+     * @return CompletableFuture yang berisi daftar produk dalam bentuk
+     *         List<ProductModel>
+     */
+    public CompletableFuture<List<ProductModel>> getAllProducts() {
+        return readProductUseCase.call(null)
+                .thenApply(products -> {
+                    System.out.println("Berhasil mengambil daftar produk: " + products.size() + " item ditemukan.");
+                    return products;
+                });
+    }
+
+    /**
+     * Metode untuk mengambil produk berdasarkan ID.
+     * 
+     * @param productId ID produk yang akan diambil
+     * @return CompletableFuture yang berisi produk yang ditemukan atau null jika
+     *         tidak ada
+     */
+    public CompletableFuture<ProductModel> getProductById(int productId) {
+        return getProductByIdUsecase.call(productId)
+                .thenApply(product -> {
+                    if (product != null) {
+                        System.out.println("Produk ditemukan: " + product.getName());
+                    } else {
+                        System.out.println("Produk dengan ID " + productId + " tidak ditemukan.");
+                    }
+                    return product;
+                });
+    }
+}
