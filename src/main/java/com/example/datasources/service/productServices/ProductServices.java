@@ -11,14 +11,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
 import domain.model.product.ProductModel;
 
 public class ProductServices {
     private final Connection connection;
     private final ExecutorService executorService;
 
-    public ProductServices(Connection connection)  {
+    public ProductServices(Connection connection) {
         this.connection = connection;
         this.executorService = Executors.newCachedThreadPool();
     };
@@ -118,6 +117,31 @@ public class ProductServices {
         }, executorService);
     }
 
+    public CompletableFuture<List<ProductModel>> getAllProductsBySellerUid(int uid) {
+
+        return CompletableFuture.supplyAsync(() -> {
+            List<ProductModel> products = new ArrayList<>();
+            String sql = "SELECT * FROM products WHERE uid = ?";
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setInt(1, uid);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        ProductModel product = new ProductModel(
+                                rs.getInt("id"),
+                                rs.getString("name"),
+                                rs.getString("description"),
+                                rs.getDouble("price"),
+                                rs.getInt("stock"),
+                                rs.getInt("uid"));
+                        products.add(product);
+                    }
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException("Error fetching products for user with UID: " + uid, e);
+            }
+            return products;
+        }, executorService);
+    }
 
     public void shutdown() {
         executorService.shutdown();

@@ -9,6 +9,7 @@ import domain.usecase.product.DeleteProductUseCase;
 import domain.usecase.product.GetProductById;
 import domain.usecase.product.ReadProductUseCase;
 import domain.usecase.product.UpdateProductUsecase;
+import domain.usecase.product.GetProductBySellerUidUsecase;
 
 public class ProductViewModel {
     private final AddProductUsecase addProductUsecase;
@@ -16,6 +17,7 @@ public class ProductViewModel {
     private final UpdateProductUsecase updateProductUsecase;
     private final ReadProductUseCase readProductUseCase;
     private final GetProductById getProductByIdUsecase;
+    private final GetProductBySellerUidUsecase getProductBySellerUidUsecase;
 
     // Konstruktor untuk inisialisasi dependensi yang diperlukan oleh
     // ProductViewModel
@@ -23,11 +25,13 @@ public class ProductViewModel {
             DeleteProductUseCase deleteProductUseCase,
             UpdateProductUsecase updateProductUsecase,
             ReadProductUseCase readProductUseCase,
+            GetProductBySellerUidUsecase getProductBySellerUidUsecase,
             GetProductById getProductByIdUsecase) {
         this.addProductUsecase = addProductUsecase;
         this.deleteProductUseCase = deleteProductUseCase;
         this.updateProductUsecase = updateProductUsecase;
         this.readProductUseCase = readProductUseCase;
+        this.getProductBySellerUidUsecase = getProductBySellerUidUsecase;
         this.getProductByIdUsecase = getProductByIdUsecase;
     }
 
@@ -76,6 +80,15 @@ public class ProductViewModel {
         return readProductUseCase.call(null)
                 .thenApply(products -> {
                     System.out.println("Berhasil mengambil daftar produk: " + products.size() + " item ditemukan.");
+                    return products;
+                });
+    }
+
+    public CompletableFuture<List<ProductModel>> getAllProductsBySellerUId(int uid) {
+        return getProductBySellerUidUsecase.call(uid)
+                .thenApply(products -> {
+                    System.out.println("Berhasil mengambil daftar produk untuk seller: " + uid + products.size()
+                            + " item ditemukan.");
                     return products;
                 });
     }

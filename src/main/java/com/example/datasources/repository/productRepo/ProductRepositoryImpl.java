@@ -40,4 +40,8 @@ public class ProductRepositoryImpl implements ProductRepository {
         return productService.deleteProduct(id);
     }
 
+    @Override
+    public CompletableFuture<List<ProductModel>> getAllProductsBySellerUid(int uid) throws SQLException {
+        return productService.getAllProductsBySellerUid(uid);
+    }
 }

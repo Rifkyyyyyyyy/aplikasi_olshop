@@ -20,6 +20,7 @@ domain/model/product/ProductModel.class
 constant/role/Role.class
 core/usecase/UsecaseApp.class
 datasources/repository/userRepo/UserRepositoryImpl.class
+domain/usecase/product/GetProductBySellerUidUsecase.class
 datasources/service/conectionServices/ConnectionServices.class
 domain/usecase/product/ReadProductUseCase.class
 presentation/viewModel/auth/AuthViewModel.class

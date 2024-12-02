@@ -16,6 +16,7 @@
 /mnt/sdb4/ngoding/project/src/main/java/com/example/domain/usecase/product/AddProductUsecase.java
 /mnt/sdb4/ngoding/project/src/main/java/com/example/domain/usecase/product/DeleteProductUseCase.java
 /mnt/sdb4/ngoding/project/src/main/java/com/example/domain/usecase/product/GetProductById.java
+/mnt/sdb4/ngoding/project/src/main/java/com/example/domain/usecase/product/GetProductBySellerUidUsecase.java
 /mnt/sdb4/ngoding/project/src/main/java/com/example/domain/usecase/product/ReadProductUseCase.java
 /mnt/sdb4/ngoding/project/src/main/java/com/example/domain/usecase/product/UpdateProductUsecase.java
 /mnt/sdb4/ngoding/project/src/main/java/com/example/presentation/view/AuthView.java

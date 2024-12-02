@@ -11,7 +11,7 @@ import presentation.viewModel.product.ProductViewModel;
 import java.awt.*;
 
 public class SellerView extends JFrame {
-    private final ProductViewModel productViewModel;
+    private ProductViewModel productViewModel;
 
     private JTable productTable;
     private DefaultTableModel tableModel;
@@ -23,7 +23,7 @@ public class SellerView extends JFrame {
     private JTextField priceField;
     private JTextField stockField;
 
-    private int uid; 
+    private int uid;
 
     public SellerView(ProductViewModel productViewModel) {
         this.productViewModel = productViewModel;
@@ -41,8 +41,6 @@ public class SellerView extends JFrame {
         this.uid = uid;
     }
 
-    
-
     private void initializeComponents() {
         // Main layout
         setLayout(new BorderLayout());
@@ -59,7 +57,7 @@ public class SellerView extends JFrame {
 
         formPanel.add(new JLabel("ID:"));
         idField = new JTextField();
-        idField.setEditable(false); 
+        idField.setEditable(false);
         formPanel.add(idField);
 
         formPanel.add(new JLabel("Name:"));
@@ -98,9 +96,9 @@ public class SellerView extends JFrame {
     }
 
     private void loadProducts() {
-        productViewModel.getAllProducts().thenAccept(products -> {
+        productViewModel.getAllProductsBySellerUId(uid).thenAccept(products -> {
             SwingUtilities.invokeLater(() -> {
-                tableModel.setRowCount(0); // Clear existing rows
+                tableModel.setRowCount(0);
                 for (ProductModel product : products) {
                     tableModel.addRow(new Object[] {
                             product.getId(),

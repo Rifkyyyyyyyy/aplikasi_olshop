@@ -4,6 +4,11 @@ import java.sql.SQLException;
 
 import javax.swing.SwingUtilities;
 
+import datasources.repository.productRepo.ProductRepositoryImpl;
+import datasources.repository.userRepo.UserRepositoryImpl;
+import datasources.service.conectionServices.ConnectionServices;
+import datasources.service.productServices.ProductServices;
+import datasources.service.userServices.UserServices;
 import domain.repository.auth.UserRepository;
 import domain.repository.product.ProductRepository;
 import domain.usecase.auth.LoginUsecase;
@@ -11,6 +16,7 @@ import domain.usecase.auth.RegisterUsecase;
 import domain.usecase.product.AddProductUsecase;
 import domain.usecase.product.DeleteProductUseCase;
 import domain.usecase.product.GetProductById;
+import domain.usecase.product.GetProductBySellerUidUsecase;
 import domain.usecase.product.ReadProductUseCase;
 import domain.usecase.product.UpdateProductUsecase;
 import presentation.view.AuthView;
@@ -18,11 +24,6 @@ import presentation.view.SellerView;
 import presentation.view.UserView;
 import presentation.viewModel.auth.AuthViewModel;
 import presentation.viewModel.product.ProductViewModel;
-import datasources.repository.productRepo.ProductRepositoryImpl;
-import datasources.repository.userRepo.UserRepositoryImpl;
-import datasources.service.conectionServices.ConnectionServices;
-import datasources.service.productServices.ProductServices;
-import datasources.service.userServices.UserServices;
 
 public class App {
 
@@ -39,6 +40,7 @@ public class App {
     private final DeleteProductUseCase deleteProductUseCase;
     private final AddProductUsecase addProductUsecase;
     private final GetProductById getProductById;
+    private final GetProductBySellerUidUsecase getAllProductsBySellerUId;
 
     // services
     private final ConnectionServices connectionServices;
@@ -77,19 +79,20 @@ public class App {
         this.addProductUsecase = new AddProductUsecase(productRepository);
         this.getProductById = new GetProductById(productRepository);
 
+        this.getAllProductsBySellerUId = new GetProductBySellerUidUsecase(productRepository);
+
         // Initialize ViewModels
         this.authViewModel = new AuthViewModel(loginUsecase, registerUsecase);
-        this.productViewModel = new ProductViewModel(addProductUsecase, deleteProductUseCase, updateProductUsecase,
-                readProductUseCase, getProductById);
+        this.productViewModel = new ProductViewModel(addProductUsecase, deleteProductUseCase, updateProductUsecase, readProductUseCase, getAllProductsBySellerUId, getProductById);
     }
 
     private void runApp() {
-      
+
         SwingUtilities.invokeLater(() -> {
             AuthView authView = new AuthView(authViewModel, new UserView(productViewModel),
                     new SellerView(productViewModel));
             authView.setVisible(true);
-            authView.display(); 
+            authView.display();
         });
     }
 

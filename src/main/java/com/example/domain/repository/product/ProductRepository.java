@@ -15,4 +15,6 @@ public interface ProductRepository {
     public CompletableFuture<Void> updateProduct(ProductModel product) throws SQLException;
 
     public CompletableFuture<Void> deleteProduct(int id) throws SQLException;
+
+    public CompletableFuture<List<ProductModel>> getAllProductsBySellerUid(int uid) throws SQLException;
 }
