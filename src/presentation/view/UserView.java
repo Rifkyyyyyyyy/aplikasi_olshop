@@ -29,7 +29,7 @@ public class UserView extends JFrame {
     private final JPanel productPanel;
     private final JProgressBar progressBar;
     private final Map<ProductModel, Integer> cart; // Menyimpan produk dengan jumlah
-
+    private final String user;
     /**
      * Konstruktor untuk menginisialisasi tampilan pengguna.
      * 
@@ -39,6 +39,7 @@ public class UserView extends JFrame {
     public UserView(ProductViewModel viewModel, String user) {
         this.viewModel = viewModel;
         this.cart = new HashMap<>(); // Inisialisasi keranjang
+        this.user = user;
 
         setTitle("Tampilan Pengguna");
         setSize(800, 600);
@@ -84,6 +85,10 @@ public class UserView extends JFrame {
 
         setLocationRelativeTo(null);
         loadAllProducts(); // Memuat produk saat aplikasi dimulai
+    }
+
+    public String userView () {
+        return user;
     }
 
     /**
@@ -146,6 +151,9 @@ public class UserView extends JFrame {
         // Menambahkan label Stok Produk
         JLabel stockLabel = new JLabel("Stok: " + product.getStock());
         card.add(stockLabel);
+
+        JLabel sellerLabel = new JLabel("Penjual: " + product.getSellerName());
+        card.add(sellerLabel);
     
         // Menambahkan margin top sebelum tombol
         card.add(Box.createVerticalStrut(10)); // Margin top 10px sebelum tombol

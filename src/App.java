@@ -50,7 +50,7 @@ class App {
 
     public static void main(String[] args) {
         new App().runApp();
-    }
+    }clear
 
     public App()  {
         // Initialize services first

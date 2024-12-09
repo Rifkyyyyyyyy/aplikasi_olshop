@@ -254,7 +254,7 @@ public class AuthView extends JFrame {
                 JOptionPane.showMessageDialog(this, "Login Successful: " + user.getRole());
                 if (user.getRole().equals(Role.SELLER)) {
                     System.out.println("Routing to Seller Page with ID: " + user.getId());
-                    routeToSellerPage(user.getId());
+                    routeToSellerPage(user.getId() , user.getUsername());
                 } else {
                     System.out.println("Routing to Buyer Page with ID: " + user.getId());
                     routeToBuyerPage(user.getUsername());
@@ -305,10 +305,10 @@ public class AuthView extends JFrame {
                 });
     }
 
-    private void routeToSellerPage(String id) {
+    private void routeToSellerPage(String id , String user) {
         JOptionPane.showMessageDialog(this, "Welcome to the Seller Dashboard!");
         this.setVisible(false);
-        SellerView sellerView = new SellerView(productViewModel, id);
+        SellerView sellerView = new SellerView(productViewModel, id , user);
 
 
         sellerView.setVisible(true);

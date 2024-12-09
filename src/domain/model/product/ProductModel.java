@@ -10,15 +10,17 @@ public class ProductModel {
     private final double price;
     private final int stock;
     private final String userId;
+    private final String sellerName;  // Added sellerName field
 
     // Constructor to initialize the ProductModel object
-    public ProductModel(String id, String name, String description, double price, int stock, String userId) {
+    public ProductModel(String id, String name, String description, double price, int stock, String userId, String sellerName) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.stock = stock;
         this.userId = userId;
+        this.sellerName = sellerName;  // Initialize sellerName
     }
 
     // Getter methods
@@ -46,15 +48,19 @@ public class ProductModel {
         return userId;
     }
 
+    public final String getSellerName() {
+        return sellerName;  // Getter for sellerName
+    }
+
     @Override
     public final String toString() {
         return "ProductModel{id=" + id + ", name='" + name + "', description='" + description + "', price=" + price
-                + ", stock=" + stock + ", userId=" + userId + "}";
+                + ", stock=" + stock + ", userId=" + userId + ", sellerName='" + sellerName + "'}";  // Updated toString
     }
 
     @Override
     public final int hashCode() {
-        return Objects.hash(id, name, description, price, stock, userId);
+        return Objects.hash(id, name, description, price, stock, userId, sellerName);  // Updated hashCode
     }
 
     @Override
@@ -68,9 +74,10 @@ public class ProductModel {
         ProductModel that = (ProductModel) obj;
         return Double.compare(that.price, price) == 0 &&
                 stock == that.stock &&
-                userId == that.userId &&
+                userId.equals(that.userId) &&
                 Objects.equals(id, that.id) &&
                 Objects.equals(name, that.name) &&
-                Objects.equals(description, that.description);
+                Objects.equals(description, that.description) &&
+                Objects.equals(sellerName, that.sellerName);  // Updated equals
     }
 }

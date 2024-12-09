@@ -25,7 +25,7 @@ public class ProductServices {
     // Add product
     public CompletableFuture<Void> addProduct(ProductModel product) {
         return CompletableFuture.runAsync(() -> {
-            String sql = "INSERT INTO products (id, name, description, price, stock, user_id) VALUES (?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO products (id, name, description, price, stock, user_id, seller_name) VALUES (?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setString(1, product.getId());  // id sebagai String
                 stmt.setString(2, product.getName());
@@ -33,6 +33,7 @@ public class ProductServices {
                 stmt.setDouble(4, product.getPrice());
                 stmt.setInt(5, product.getStock());
                 stmt.setString(6, product.getUserId());  // user_id sebagai String
+                stmt.setString(7, product.getSellerName());  // seller_name
                 stmt.executeUpdate();
             } catch (SQLException e) {
                 throw new RuntimeException("Error inserting product", e);
@@ -54,7 +55,9 @@ public class ProductServices {
                                 rs.getString("description"),
                                 rs.getDouble("price"),
                                 rs.getInt("stock"),
-                                rs.getString("user_id"));  // user_id sebagai String
+                                rs.getString("user_id"),
+                                rs.getString("seller_name") // Menambahkan seller_name
+                        );
                     }
                 }
             } catch (SQLException e) {
@@ -78,7 +81,9 @@ public class ProductServices {
                             rs.getString("description"),
                             rs.getDouble("price"),
                             rs.getInt("stock"),
-                            rs.getString("user_id"));  // user_id sebagai String
+                            rs.getString("user_id"),
+                            rs.getString("seller_name")  // Menambahkan seller_name
+                    );
                     products.add(product);
                 }
             } catch (SQLException e) {
@@ -87,17 +92,19 @@ public class ProductServices {
             return products;
         }, executorService);
     }
+
     // Update product
     public CompletableFuture<Void> updateProduct(ProductModel product) {
         return CompletableFuture.runAsync(() -> {
-            String sql = "UPDATE products SET name = ?, description = ?, price = ?, stock = ?, user_id = ? WHERE id = ?";
+            String sql = "UPDATE products SET name = ?, description = ?, price = ?, stock = ?, user_id = ?, seller_name = ? WHERE id = ?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setString(1, product.getName());
                 stmt.setString(2, product.getDescription());
                 stmt.setDouble(3, product.getPrice());
                 stmt.setInt(4, product.getStock());
                 stmt.setString(5, product.getUserId());  // user_id sebagai String
-                stmt.setString(6, product.getId());      // id sebagai String
+                stmt.setString(6, product.getSellerName());  // Menambahkan seller_name
+                stmt.setString(7, product.getId());      // id sebagai String
                 stmt.executeUpdate();
             } catch (SQLException e) {
                 throw new RuntimeException("Error updating product", e);
@@ -119,12 +126,12 @@ public class ProductServices {
     }
 
     // Get all products by seller's user_id
-    public CompletableFuture<List<ProductModel>> getAllProductsBySellerUid(String userId) {  
+    public CompletableFuture<List<ProductModel>> getAllProductsBySellerUid(String userId) {
         return CompletableFuture.supplyAsync(() -> {
             List<ProductModel> products = new ArrayList<>();
-            String sql = "SELECT p.id, p.name, p.description, p.price, p.stock, p.user_id " +
+            String sql = "SELECT p.id, p.name, p.description, p.price, p.stock, p.user_id, p.seller_name " +
                          "FROM products p " +
-                         "JOIN users u ON p.user_id = u.id " +  
+                         "JOIN users u ON p.user_id = u.id " +
                          "WHERE u.id = ? AND u.role = 'SELLER' AND p.stock > 0";  // Menambahkan kondisi stok > 0
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setString(1, userId);  // user_id sebagai String
@@ -136,7 +143,9 @@ public class ProductServices {
                                 rs.getString("description"),
                                 rs.getDouble("price"),
                                 rs.getInt("stock"),
-                                rs.getString("user_id"));  // user_id sebagai String
+                                rs.getString("user_id"),
+                                rs.getString("seller_name")  // Menambahkan seller_name
+                        );
                         products.add(product);
                     }
                 }
@@ -146,8 +155,9 @@ public class ProductServices {
             return products;
         }, executorService);
     }
+
     // Purchase product (decrease stock)
-    public CompletableFuture<Void> purchaseProduct(String productId, int quantity) {  // productId sebagai String
+    public CompletableFuture<Void> purchaseProduct(String productId, int quantity) {
         return CompletableFuture.runAsync(() -> {
             String sql = "UPDATE products SET stock = stock - ? WHERE id = ? AND stock >= ?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {

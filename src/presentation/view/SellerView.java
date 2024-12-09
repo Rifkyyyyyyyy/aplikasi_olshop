@@ -3,15 +3,25 @@ package presentation.view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.text.NumberFormat;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.NumberFormatter;
 
 import domain.model.product.ProductModel;
 import presentation.viewModel.product.ProductViewModel;
-
-import javax.swing.*;
-import java.text.NumberFormat;
-import javax.swing.text.NumberFormatter;
 
 
 public class SellerView extends JFrame {
@@ -28,6 +38,7 @@ public class SellerView extends JFrame {
     private JTextField stockField;
 
     private String uid;
+    private  String user;
 
     /**
      * Konstruktor untuk SellerView.
@@ -35,8 +46,9 @@ public class SellerView extends JFrame {
      * @param productViewModel ViewModel untuk produk
      * @param uid ID pengguna penjual
      */
-    public SellerView(ProductViewModel productViewModel, String uid) {
+    public SellerView(ProductViewModel productViewModel, String uid , String user) {
         this.productViewModel = productViewModel;
+        this.user = user;
 
         setTitle("Manajemen Produk");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -252,7 +264,7 @@ public class SellerView extends JFrame {
             double price = ((Number) priceField.getValue()).doubleValue();
             int stock = Integer.parseInt(stockField.getText());
             String productId = "Yoto-" + (int) (Math.random() * Integer.MAX_VALUE);
-            ProductModel product = new ProductModel(productId, name, description, price, stock, uid);
+            ProductModel product = new ProductModel(productId, name, description, price, stock, uid , user);
             productViewModel.addProduct(product).thenRun(this::loadProducts);
             JOptionPane.showMessageDialog(this, "Produk berhasil ditambahkan.", "Sukses", JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception ex) {
@@ -271,7 +283,7 @@ public class SellerView extends JFrame {
             String description = descriptionField.getText();
             double price = ((Number) priceField.getValue()).doubleValue();
             int stock = Integer.parseInt(stockField.getText());
-            ProductModel product = new ProductModel(productId, name, description, price, stock, uid);
+            ProductModel product = new ProductModel(productId, name, description, price, stock, uid , user);
             productViewModel.updateProduct(product).thenRun(this::loadProducts);
             JOptionPane.showMessageDialog(this, "Produk berhasil diperbarui.", "Sukses", JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception ex) {
