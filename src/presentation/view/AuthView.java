@@ -1,12 +1,13 @@
 package presentation.view;
 
+import constant.role.Role;
+import domain.model.users.UsersModel;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -20,9 +21,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-
-import constant.role.Role;
-import domain.model.users.UsersModel;
 import presentation.viewModel.auth.AuthViewModel;
 import presentation.viewModel.product.ProductViewModel;
 
