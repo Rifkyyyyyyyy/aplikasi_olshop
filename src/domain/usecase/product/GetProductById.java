@@ -1,5 +1,6 @@
 package domain.usecase.product;
 
+import java.sql.SQLException;
 import java.util.concurrent.CompletableFuture;
 
 import core.usecase.UsecaseApp;
@@ -17,7 +18,7 @@ public class GetProductById extends UsecaseApp<ProductModel, String> {
     public CompletableFuture<ProductModel> call(String params) {
         try {
             return productRepository.getProductById(params);
-        } catch (Exception e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e.toString());
         }
     }

@@ -47,9 +47,15 @@ public class ProductViewModel {
      *                ditambahkan
      * @return CompletableFuture yang menunjukkan proses penambahan produk
      */
-    public CompletableFuture<Void> addProduct(ProductModel product) {
-        return addProductUsecase.call(product)
-                .thenRun(() -> System.out.println("Produk berhasil ditambahkan: " + product.getName()));
+    public CompletableFuture<Boolean> addProduct(ProductModel product) {
+        return addProductUsecase.call(product).thenApply((result) -> {
+            if(result) {
+                System.out.println("Produk berhasil ditambahkan: " + product.getName());
+            } else {
+                System.out.println("Gagal menambahkan produk: " + product.getName());
+            }
+            return result;
+        });
     }
 
     /**
@@ -70,9 +76,16 @@ public class ProductViewModel {
      *                diperbarui
      * @return CompletableFuture yang menunjukkan proses pembaruan produk
      */
-    public CompletableFuture<Void> updateProduct(ProductModel product) {
-        return updateProductUsecase.call(product)
-                .thenRun(() -> System.out.println("Produk berhasil diperbarui: " + product.getName()));
+    public CompletableFuture<Boolean> updateProduct(ProductModel product) {
+        return updateProductUsecase.call(product).thenApply((result) -> {
+             if(result) {
+                 System.out.println("Produk berhasil diperbarui: " + product.getName());
+             } else {
+                 System.out.println("Gagal memperbarui produk: " + product.getName());
+             }
+
+            return  result;
+        });
     }
 
     /**

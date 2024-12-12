@@ -23,8 +23,8 @@ public class ProductServices {
     }
 
     // Add product
-    public CompletableFuture<Void> addProduct(ProductModel product) {
-        return CompletableFuture.runAsync(() -> {
+    public CompletableFuture<Boolean> addProduct(ProductModel product) {
+        return CompletableFuture.supplyAsync(() -> {
             String sql = "INSERT INTO products (id, name, description, price, stock, user_id, seller_name) VALUES (?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setString(1, product.getId());  // id sebagai String
@@ -34,7 +34,9 @@ public class ProductServices {
                 stmt.setInt(5, product.getStock());
                 stmt.setString(6, product.getUserId());  // user_id sebagai String
                 stmt.setString(7, product.getSellerName());  // seller_name
-                stmt.executeUpdate();
+                int affectedRows = stmt.executeUpdate();
+
+                return affectedRows > 0;
             } catch (SQLException e) {
                 throw new RuntimeException("Error inserting product", e);
             }
@@ -94,8 +96,8 @@ public class ProductServices {
     }
 
     // Update product
-    public CompletableFuture<Void> updateProduct(ProductModel product) {
-        return CompletableFuture.runAsync(() -> {
+    public CompletableFuture<Boolean> updateProduct(ProductModel product) {
+        return CompletableFuture.supplyAsync(() -> {
             String sql = "UPDATE products SET name = ?, description = ?, price = ?, stock = ?, user_id = ?, seller_name = ? WHERE id = ?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setString(1, product.getName());
@@ -105,7 +107,8 @@ public class ProductServices {
                 stmt.setString(5, product.getUserId());  // user_id sebagai String
                 stmt.setString(6, product.getSellerName());  // Menambahkan seller_name
                 stmt.setString(7, product.getId());      // id sebagai String
-                stmt.executeUpdate();
+                 int rows = stmt.executeUpdate();
+                 return  rows > 0;
             } catch (SQLException e) {
                 throw new RuntimeException("Error updating product", e);
             }

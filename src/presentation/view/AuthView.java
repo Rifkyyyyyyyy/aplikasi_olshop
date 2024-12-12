@@ -24,6 +24,7 @@ import javax.swing.JTextField;
 import constant.role.Role;
 import domain.model.users.UsersModel;
 import presentation.viewModel.auth.AuthViewModel;
+import presentation.viewModel.balance.BalanceViewModel;
 import presentation.viewModel.product.ProductViewModel;
 
 public class AuthView extends JFrame {
@@ -33,14 +34,15 @@ public class AuthView extends JFrame {
     private JButton registerButton;
     private final AuthViewModel authViewModel;
     private  final ProductViewModel productViewModel;
+    private final BalanceViewModel balanceViewModel;
 
 
-    private JPanel cardPanel;
-    private CardLayout cardLayout;
+    private final JPanel cardPanel;
+    private final CardLayout cardLayout;
 
-    public AuthView(AuthViewModel authViewModel, ProductViewModel productViewModel)  {
+    public AuthView(AuthViewModel authViewModel, ProductViewModel productViewModel , BalanceViewModel viewModel)  {
         this.authViewModel = authViewModel;
-
+      this.balanceViewModel = viewModel;
         this.productViewModel = productViewModel;
       
 
@@ -308,7 +310,7 @@ public class AuthView extends JFrame {
     private void routeToSellerPage(String id , String user) {
         JOptionPane.showMessageDialog(this, "Welcome to the Seller Dashboard!");
         this.setVisible(false);
-        SellerView sellerView = new SellerView(productViewModel, id , user);
+        SellerView sellerView = new SellerView(productViewModel, id , user , balanceViewModel);
 
 
         sellerView.setVisible(true);
@@ -317,7 +319,7 @@ public class AuthView extends JFrame {
     private void routeToBuyerPage(String id) {
         JOptionPane.showMessageDialog(this, "Welcome to the Buyer Dashboard!");
         this.setVisible(false);
-       UserView userView = new UserView(productViewModel, id);
+       UserView userView = new UserView(productViewModel, id , balanceViewModel);
        userView.setVisible(true);
     }
 

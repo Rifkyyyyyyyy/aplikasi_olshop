@@ -24,6 +24,7 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 import domain.model.product.ProductModel;
+import presentation.viewModel.balance.BalanceViewModel;
 import presentation.viewModel.product.ProductViewModel;
 
 
@@ -34,6 +35,7 @@ public class CartView extends JFrame {
     private final ProductViewModel viewModel;
     private final UserView userView;
     private final JLabel totalLabel;
+    private final BalanceViewModel balanceViewModel;
 
     /**
      * Konstruktor untuk membuat tampilan keranjang belanja.
@@ -42,11 +44,12 @@ public class CartView extends JFrame {
      * @param viewModel ViewModel untuk melakukan operasi terkait produk.
      * @param userView  Tampilan pengguna untuk navigasi balik.
      */
-      public CartView(Map<ProductModel, Integer> cart, ProductViewModel viewModel, UserView userView) {
+      public CartView(Map<ProductModel, Integer> cart, ProductViewModel viewModel, UserView userView , BalanceViewModel view) {
         this.cart = cart;
         this.selectedItems = new HashMap<>(); // Inisialisasi map untuk selected items
         this.viewModel = viewModel;
         this.userView = userView;
+        this.balanceViewModel = view;
 
         setTitle("Keranjang Belanja");
         setSize(600, 400);
@@ -55,6 +58,7 @@ public class CartView extends JFrame {
 
         // Panel atas
         JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
         JButton backButton = new JButton("Kembali");
         backButton.addActionListener(_ -> goBackToUserView());
@@ -222,7 +226,7 @@ public class CartView extends JFrame {
             }
     
             // Tampilkan tampilan sukses transaksi
-            TransactionSuccessView transactionSuccessView = new TransactionSuccessView(purchasedProducts, userView);
+            TransactionSuccessView transactionSuccessView = new TransactionSuccessView(purchasedProducts, userView , balanceViewModel);
             transactionSuccessView.setVisible(true);
     
             this.dispose(); // Tutup jendela checkout

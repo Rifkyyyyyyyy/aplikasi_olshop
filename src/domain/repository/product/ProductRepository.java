@@ -7,13 +7,13 @@ import java.util.concurrent.CompletableFuture;
 import domain.model.product.ProductModel;
 
 public interface ProductRepository {
-    public CompletableFuture<Void> addProduct(ProductModel product) throws SQLException;
+    public CompletableFuture<Boolean> addProduct(ProductModel product) throws SQLException;
 
     public CompletableFuture<List<ProductModel>> getAllProducts() throws SQLException;
 
     public CompletableFuture<ProductModel> getProductById(String id) throws SQLException;
 
-    public CompletableFuture<Void> updateProduct(ProductModel product) throws SQLException;
+    public CompletableFuture<Boolean> updateProduct(ProductModel product) throws SQLException;
 
     public CompletableFuture<Void> deleteProduct(String id) throws SQLException;
 

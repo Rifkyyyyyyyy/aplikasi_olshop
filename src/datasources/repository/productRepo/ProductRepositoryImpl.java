@@ -16,7 +16,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public CompletableFuture<Void> addProduct(ProductModel product) throws SQLException {
+    public CompletableFuture<Boolean> addProduct(ProductModel product) throws SQLException {
         return productService.addProduct(product);
     }
 
@@ -31,7 +31,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public CompletableFuture<Void> updateProduct(ProductModel product) throws SQLException {
+    public CompletableFuture<Boolean> updateProduct(ProductModel product) throws SQLException {
         return productService.updateProduct(product);
     }
 

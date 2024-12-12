@@ -22,11 +22,13 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 import domain.model.product.ProductModel;
+import presentation.viewModel.balance.BalanceViewModel;
 import presentation.viewModel.product.ProductViewModel;
 
 public class UserView extends JFrame {
     private final ProductViewModel viewModel;
     private final JPanel productPanel;
+    private final BalanceViewModel balanceViewModel;
     private final JProgressBar progressBar;
     private final Map<ProductModel, Integer> cart; // Menyimpan produk dengan jumlah
     private final String user;
@@ -36,10 +38,11 @@ public class UserView extends JFrame {
      * @param viewModel Model tampilan produk
      * @param user Nama pengguna yang akan ditampilkan
      */
-    public UserView(ProductViewModel viewModel, String user) {
+    public UserView(ProductViewModel viewModel, String user , BalanceViewModel view) {
         this.viewModel = viewModel;
         this.cart = new HashMap<>(); // Inisialisasi keranjang
         this.user = user;
+        this.balanceViewModel = view;
 
         setTitle("Tampilan Pengguna");
         setSize(800, 600);
@@ -205,7 +208,7 @@ public class UserView extends JFrame {
      * Metode untuk membuka tampilan keranjang belanja.
      */
     private void openCartView() {
-        CartView cartView = new CartView(cart, viewModel, this); // Membuka tampilan keranjang
+        CartView cartView = new CartView(cart, viewModel, this , balanceViewModel); // Membuka tampilan keranjang
         this.setVisible(false); // Menyembunyikan tampilan pengguna
         cartView.setVisible(true); // Menampilkan tampilan keranjang
     }

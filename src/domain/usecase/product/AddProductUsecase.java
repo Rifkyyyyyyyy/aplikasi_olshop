@@ -7,7 +7,7 @@ import core.usecase.UsecaseApp;
 import domain.model.product.ProductModel;
 import domain.repository.product.ProductRepository;
 
-public class AddProductUsecase extends UsecaseApp<Void, ProductModel> {
+public class AddProductUsecase extends UsecaseApp<Boolean, ProductModel> {
 
     private final ProductRepository productRepository;
 
@@ -16,11 +16,10 @@ public class AddProductUsecase extends UsecaseApp<Void, ProductModel> {
     }
 
     @Override
-    public CompletableFuture<Void> call(ProductModel product) {
+    public CompletableFuture<Boolean> call(ProductModel product) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                productRepository.addProduct(product);
-                return null;
+              return productRepository.addProduct(product).join();
             } catch (SQLException e) {
                 throw new RuntimeException(e.toString());
             }

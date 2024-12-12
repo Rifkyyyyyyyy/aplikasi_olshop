@@ -2,10 +2,12 @@ package presentation.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.text.NumberFormat;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
@@ -21,24 +23,29 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.text.NumberFormatter;
 
 import domain.model.product.ProductModel;
+import presentation.viewModel.balance.BalanceViewModel;
 import presentation.viewModel.product.ProductViewModel;
 
 
 public class SellerView extends JFrame {
     private final ProductViewModel productViewModel;
+    private final BalanceViewModel balanceViewModel;
 
     private JTable productTable;
     private DefaultTableModel tableModel;
 
     // Input fields
-    private JTextField idField;
+
     private JTextField nameField;
     private JTextField descriptionField;
     private JFormattedTextField priceField;
     private JTextField stockField;
+    private JLabel nameLabel;
+    private JLabel balanceLabel;
 
-    private String uid;
-    private  String user;
+
+    private final String uid;
+    private final String user;
 
     /**
      * Konstruktor untuk SellerView.
@@ -46,9 +53,10 @@ public class SellerView extends JFrame {
      * @param productViewModel ViewModel untuk produk
      * @param uid ID pengguna penjual
      */
-    public SellerView(ProductViewModel productViewModel, String uid , String user) {
+    public SellerView(ProductViewModel productViewModel, String uid , String user , BalanceViewModel viewModel) {
         this.productViewModel = productViewModel;
         this.user = user;
+        this.balanceViewModel = viewModel;
 
         setTitle("Manajemen Produk");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -58,6 +66,7 @@ public class SellerView extends JFrame {
 
         initializeComponents();
         loadProducts();
+        loadSellerBalance();
     }
 
     /**
@@ -66,6 +75,19 @@ public class SellerView extends JFrame {
     private void initializeComponents() {
         // Main layout
         setLayout(new BorderLayout());
+
+        JPanel headerPanel = new JPanel();
+        headerPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15)); 
+        nameLabel = new JLabel("Selamat datang" + " " + user); 
+      
+        balanceLabel = new JLabel("Saldo kamu Rp 0"); 
+
+        headerPanel.add(nameLabel);
+        headerPanel.add(Box.createHorizontalStrut(20));
+        headerPanel.add(balanceLabel);
+
+        add(headerPanel, BorderLayout.NORTH);
 
         // Table
         tableModel = new DefaultTableModel(new String[]{"ID", "Nama", "Deskripsi", "Harga", "Stok"}, 0);
@@ -109,6 +131,16 @@ public class SellerView extends JFrame {
             });
         });
     }
+
+
+    private void loadSellerBalance() {
+        balanceViewModel.getBalance(uid).thenAccept((balance) -> {
+            SwingUtilities.invokeLater(() -> {
+                balanceLabel.setText("Saldo kamu Rp " + balance.getBalance()); // Update balance label
+            });
+        });
+    }
+
 
     /**
      * Metode untuk menampilkan dialog Tambah Produk.
