@@ -91,4 +91,39 @@ public class BalanceServices {
         }
     }
     
+    public CompletableFuture<Boolean> withdraw(String userId, BigDecimal amount) {
+        return CompletableFuture.supplyAsync(() -> {
+            if (connection == null) {
+                throw new IllegalStateException("Connection is not available");
+            }
+    
+            BalanceModel currentBalance = getBalanceByUserId(userId).join();
+            if (currentBalance == null) {
+                return false;
+            }
+    
+            BigDecimal balance = currentBalance.getBalance();
+    
+            if (balance.compareTo(amount) < 0) {
+                return false;
+            }
+    
+            BigDecimal newBalance = balance.subtract(amount);
+            String sql = "UPDATE users_balance SET balance = ?, last_updated = ? WHERE user_id = ?";
+    
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                Timestamp lastUpdated = new Timestamp(System.currentTimeMillis());
+                stmt.setBigDecimal(1, newBalance);
+                stmt.setTimestamp(2, lastUpdated);
+                stmt.setString(3, userId);
+    
+                int affectedRows = stmt.executeUpdate();
+                return affectedRows > 0;
+    
+            } catch (SQLException e) {
+                return false;
+            }
+        });
+    }
+    
 }

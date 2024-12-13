@@ -151,7 +151,7 @@ private void setBalanceForSeller() {
         Timestamp createAt =  Timestamp.valueOf(LocalDateTime.now());
         BalanceModel balans = new BalanceModel(sellerUid, amount, lastUpdate, createAt);
 
-        viewModel.insertBalance(balans);
+        viewModel.updateBalance(balans);
     }
 }
 }

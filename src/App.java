@@ -28,7 +28,6 @@ import presentation.viewModel.balance.BalanceViewModel;
 import presentation.viewModel.product.ProductViewModel;
 
 class App {
-
     // viewmodel
     private final AuthViewModel authViewModel;
     private final ProductViewModel productViewModel;
@@ -92,7 +91,6 @@ class App {
         this.getBalanceByIdUsecase = new GetBalanceByIdUsecase(balanceRepository);
 
         
-
         // Initialize ViewModels
         this.authViewModel = new AuthViewModel(loginUsecase, registerUsecase);
         this.productViewModel = new ProductViewModel(addProductUsecase, deleteProductUseCase, updateProductUsecase, readProductUseCase, getAllProductsBySellerUId, purchaseProductUsecase, getProductById);
@@ -100,7 +98,6 @@ class App {
     }
 
     private void runApp() {
-
         SwingUtilities.invokeLater(() -> {
             AuthView authView = new AuthView(authViewModel, productViewModel , balanceViewModel);
             authView.setVisible(true);

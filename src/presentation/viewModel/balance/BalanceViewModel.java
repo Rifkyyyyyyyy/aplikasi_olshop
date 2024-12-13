@@ -15,7 +15,7 @@ public class BalanceViewModel {
         this.getBalans = getBalanceById;
     }
 
-     public  CompletableFuture<Boolean> insertBalance (BalanceModel data) {
+     public  CompletableFuture<Boolean> updateBalance (BalanceModel data) {
         return updateBalanceUsecase.call(data).thenApply((result) -> {
             if(result) {
                 System.out.println("Balance inserted successfully : " + data.toString());

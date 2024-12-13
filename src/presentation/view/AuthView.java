@@ -6,6 +6,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -20,8 +23,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
+import components.button.RoundedButton;
+import components.radius.RadiusBorder;
 import constant.role.Role;
+import constant.style.ColorsApp;
 import domain.model.users.UsersModel;
 import presentation.viewModel.auth.AuthViewModel;
 import presentation.viewModel.balance.BalanceViewModel;
@@ -31,8 +39,8 @@ import utils.BaseFunc;
 public class AuthView extends JFrame {
     private JTextField usernameField;
     private JPasswordField passwordField;
-    private JButton loginButton;
-    private JButton registerButton;
+
+
     private final AuthViewModel authViewModel;
     private  final ProductViewModel productViewModel;
     private final BalanceViewModel balanceViewModel;
@@ -73,79 +81,118 @@ public class AuthView extends JFrame {
     private void showLoginForm() {
         // Parent wrapper section with flex layout (Horizontal BoxLayout)
         JPanel wrapperPanel = new JPanel();
-        wrapperPanel.setLayout(new BoxLayout(wrapperPanel, BoxLayout.X_AXIS)); // Flex layout for 50% width sections
-        wrapperPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0)); // No padding/margin
+        wrapperPanel.setLayout(new GridLayout(1, 2, 5, 5));  // Horizontal gap of 5, Vertical gap of 5
+
+           wrapperPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0)); // No padding/margin
 
         // Left section with the new green color (#238b45)
         JPanel leftSection = new JPanel();
-        leftSection.setBackground(Color.decode("#238b45")); // Set background to #238b45
+        leftSection.setBackground(ColorsApp.PRIMARY); // Set background to #238b45
         leftSection.setPreferredSize(new Dimension(0, this.getHeight())); // Full height, width will adjust based on
                                                                           // layout
-        leftSection.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE)); // Ensure it fills available
-                                                                                         // space proportionally
-        leftSection.setLayout(new BoxLayout(leftSection, BoxLayout.Y_AXIS)); // Vertical layout for logo and text
+        leftSection.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE)); 
+                                                                                         
+        leftSection.setLayout(new GridLayout(0 , 1));
+        leftSection.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         // Add logo and text inside the green section
-        JLabel logoLabel = new JLabel();
-        ImageIcon logoIcon = new ImageIcon("assets/logo.png"); // Replace with your actual logo path
-        logoLabel.setIcon(logoIcon);
-        logoLabel.setAlignmentX(CENTER_ALIGNMENT); // Center the logo horizontally
-        logoLabel.setMaximumSize(new Dimension(200, 100)); // Adjust size of the logo
+    JLabel logoLabel = new JLabel();
+ImageIcon logoIcon = new ImageIcon("assets/logo.png"); // Replace with your actual logo path
+logoLabel.setIcon(logoIcon);
+logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // Center the logo horizontally
+logoLabel.setHorizontalAlignment(SwingConstants.CENTER); // Center the icon horizontally within the label
 
-        JLabel greenText = new JLabel("Welcome to Yoto App!"); // Text message
-        greenText.setFont(new Font("Arial", Font.BOLD, 18)); // Set font style for the text
-        greenText.setAlignmentX(CENTER_ALIGNMENT); // Center the text horizontally
-        greenText.setForeground(Color.WHITE); // Set the text color to white
+// Set the size of the logo to fit the full width of the container
+logoLabel.setPreferredSize(new Dimension(leftSection.getWidth(), logoIcon.getIconHeight())); // containerWidth should be the width of your container
+logoLabel.setMaximumSize(new Dimension(leftSection.getWidth(), logoIcon.getIconHeight())); // Set max width to container width
+logoLabel.setMinimumSize(new Dimension(leftSection.getWidth(), logoIcon.getIconHeight())); // Set min width to container width
 
-        leftSection.add(Box.createVerticalStrut(50)); // Add space above logo (optional)
+
+        JPanel footerLabelPanel = new JPanel();
+        footerLabelPanel.setOpaque(false);
+        footerLabelPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20)); 
+        footerLabelPanel.setLayout(new BoxLayout(footerLabelPanel, BoxLayout.Y_AXIS)); // Gunakan BoxLayout untuk pengaturan vertikal
+        
+        // Header text
+        JLabel headerText = new JLabel("Selamat datang di Yoto App!");
+        headerText.setFont(new Font("Arial", Font.BOLD, 18)); 
+        headerText.setAlignmentX(JLabel.CENTER_ALIGNMENT); 
+        headerText.setForeground(Color.WHITE);
+        
+        // Description text
+        JLabel descriptionText = new JLabel(
+            "<html><div style='text-align: center;'>"
+            + "Gabung sekarang menjadi seller untuk mendapatkan keuntungan lebih besar, "
+            + "atau menjadi buyer untuk menikmati berbagai produk berkualitas dengan harga terbaik."
+            + "</div></html>"
+        );
+        descriptionText.setFont(new Font("Arial", Font.PLAIN, 14)); // Set font style for the text
+        descriptionText.setAlignmentX(JLabel.CENTER_ALIGNMENT); // Center horizontally
+        descriptionText.setForeground(Color.WHITE);
+        
+        // Tambahkan jarak antar teks menggunakan rigid area
+        footerLabelPanel.add(headerText);
+        footerLabelPanel.add(Box.createRigidArea(new Dimension(0, 40))); // Jarak 10 piksel
+        footerLabelPanel.add(descriptionText);
+        
+        // Tambahkan panel ke leftSection
         leftSection.add(logoLabel);
-        leftSection.add(Box.createVerticalStrut(20)); // Add space between logo and text (optional)
-        leftSection.add(greenText);
+        leftSection.add(footerLabelPanel);
+        
 
+    
         // Right section with the white background for forms (fills full height)
         JPanel rightSection = new JPanel();
-        rightSection.setLayout(new BoxLayout(rightSection, BoxLayout.Y_AXIS)); // Labels above fields
+        rightSection.setLayout(new GridLayout(0 , 1));
         rightSection.setBackground(Color.WHITE);
         rightSection.setPreferredSize(new Dimension(0, this.getHeight())); // Full height, width will adjust based on
                                                                            // layout
         rightSection.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE)); // Ensure it fills available
                                                                                           // space proportionally
-        rightSection.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Padding inside the form
+        rightSection.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40)); // Padding inside the form
 
         // Add a header for the login form
-        JLabel headerLabel = new JLabel("Login");
+        JLabel headerLabel = new JLabel("Masuk Sekarang");
         headerLabel.setAlignmentX(CENTER_ALIGNMENT);
-        headerLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 32));
         rightSection.add(headerLabel);
 
         // Form elements for login
         usernameField = new JTextField(20);
         passwordField = new JPasswordField(20);
-        loginButton = new JButton("Login");
-        registerButton = new JButton("Register");
+        
+
 
         // Set max height and width for buttons and input fields, also set rounded
         // corners
         setComponentSize(usernameField, 50, 300);
         setComponentSize(passwordField, 50, 300);
-        setComponentSize(loginButton, 50, 120);
-        setComponentSize(registerButton, 50, 120);
+
 
         // Apply styles: rounded corners (8px) and bottom margin (20px)
-        usernameField.setBorder(BorderFactory.createCompoundBorder(
-                usernameField.getBorder(), BorderFactory.createEmptyBorder(0, 0, 20, 0))); // Add margin bottom for
-                                                                                           // input fields
+                                                     
         passwordField.setBorder(BorderFactory.createCompoundBorder(
                 passwordField.getBorder(), BorderFactory.createEmptyBorder(0, 0, 20, 0)));
-        loginButton.setBorder(BorderFactory.createCompoundBorder(
-                loginButton.getBorder(), BorderFactory.createEmptyBorder(0, 0, 20, 0)));
-        registerButton.setBorder(BorderFactory.createCompoundBorder(
-                registerButton.getBorder(), BorderFactory.createEmptyBorder(0, 0, 20, 0)));
+       
+   
+                
 
         usernameField.setFont(new Font("Arial", Font.PLAIN, 16)); // Font style
         passwordField.setFont(new Font("Arial", Font.PLAIN, 16));
-        loginButton.setFont(new Font("Arial", Font.PLAIN, 16));
-        registerButton.setFont(new Font("Arial", Font.PLAIN, 16));
+ 
+
+
+        usernameField.setBorder(BorderFactory.createCompoundBorder(
+            new RadiusBorder(15), // Set the custom round border with 15px radius
+            new EmptyBorder(5, 5, 5, 5)  // Add internal padding
+        ));
+
+        passwordField.setBorder(BorderFactory.createCompoundBorder(
+            new RadiusBorder(15), // Set the custom round border with 15px radius
+            new EmptyBorder(5, 5, 5, 5)  // Add internal padding
+        ));
+
+
 
         // Add labels and fields to the right section (forms)
         rightSection.add(createFieldPanel("Username:", usernameField));
@@ -156,22 +203,44 @@ public class AuthView extends JFrame {
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS)); // Horizontal layout
         buttonsPanel.setOpaque(false);
-        buttonsPanel.add(loginButton);
-        buttonsPanel.add(Box.createHorizontalStrut(20)); // Space between buttons (optional)
-        buttonsPanel.add(registerButton);
+      
+       
 
         rightSection.add(buttonsPanel);
 
-        // Add the left (green) and right (white forms) sections to the wrapper panel
+
         wrapperPanel.add(leftSection);
         wrapperPanel.add(rightSection);
 
         // Add wrapper panel to the card layout
         cardPanel.add(wrapperPanel, "login");
 
+
+        ActionListener loginListener = (ActionEvent e) -> {
+            showLoginForm();
+        };
+        ActionListener registerListener = (ActionEvent e) -> {
+            showRegisterForm();
+        };
+
         // Add action listeners
-        loginButton.addActionListener(s -> handleLogin());
-        registerButton.addActionListener(s -> showRegisterForm());
+     
+
+        RoundedButton loginButton = new RoundedButton("Log in", loginListener, 180, 55 , ColorsApp.PRIMARY2 , Color.white);
+        
+        RoundedButton registerButton = new RoundedButton(
+            "Register",     
+            registerListener,  
+            180,             
+            55,               
+            new Color(240, 240, 240),
+            Color.BLACK        
+        );
+        
+
+        buttonsPanel.add(loginButton);
+        buttonsPanel.add(Box.createHorizontalStrut(20)); // Space between buttons (optional)
+        buttonsPanel.add(registerButton);
 
         // Display login form
         cardLayout.show(cardPanel, "login");
@@ -212,7 +281,7 @@ public class AuthView extends JFrame {
         // Set max height and width for buttons and input fields
         setComponentSize(usernameField, 50, 300);
         setComponentSize(passwordField, 50, 300);
-        setComponentSize(registerButton, 50, 300);
+        // setComponentSize(registerButton, 50, 300);
         setComponentSize(backToLoginButton, 50, 300);
 
         // Add labels and fields to the right section (forms)
@@ -220,7 +289,7 @@ public class AuthView extends JFrame {
         rightSection.add(createFieldPanel("Password:", passwordField));
         rightSection.add(createFieldPanel("Role:", roleComboBox));
         rightSection.add(Box.createVerticalStrut(20));
-        rightSection.add(registerButton);
+        // rightSection.add(registerButton);
         rightSection.add(Box.createVerticalStrut(10));
         rightSection.add(backToLoginButton);
 
@@ -232,7 +301,7 @@ public class AuthView extends JFrame {
         cardPanel.add(wrapperPanel, "register");
 
         // Add action listeners
-        registerButton.addActionListener(s -> handleRegister(roleComboBox));
+        // registerButton.addActionListener(s -> handleRegister(roleComboBox));
         backToLoginButton.addActionListener(s -> showLoginForm());
 
         // Display register form
@@ -327,16 +396,25 @@ public class AuthView extends JFrame {
     private JPanel createFieldPanel(String labelText, JComponent inputField) {
         JPanel fieldPanel = new JPanel();
         fieldPanel.setOpaque(false);
-        fieldPanel.setLayout(new BoxLayout(fieldPanel, BoxLayout.Y_AXIS)); // Stack the label and input vertically
+        fieldPanel.setLayout(new GridLayout(0 , 1));
+        
         JLabel label = new JLabel(labelText);
-        label.setFont(new Font("Arial", Font.PLAIN, 16));
+        label.setFont(new Font("Arial", Font.PLAIN, 14));  // Set font style, size, and name
+        label.setForeground(Color.BLACK);  // Set the font color        
         label.setOpaque(false);
+        
+        // Align the label to the left
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
-
+    
+        // Add bottom margin to the label using EmptyBorder
+        label.setBorder(new EmptyBorder(0, 0, 10, 0)); // 10px margin at the bottom
+    
         fieldPanel.add(label); // Add the label
         fieldPanel.add(inputField); // Add the input field
+        
         return fieldPanel;
     }
+    
 
     private void setComponentSize(JComponent component, int height, int width) {
         component.setMaximumSize(new Dimension(width, height));

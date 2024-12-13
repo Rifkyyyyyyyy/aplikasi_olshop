@@ -51,7 +51,7 @@ Berikut adalah langkah-langkah untuk mempersiapkan dan menjalankan aplikasi:
 1. **Install MySQL Connector**
    - Unduh MySQL Connector sesuai dengan sistem operasi Anda:
      - Untuk Linux: [mysql-connector-j-9.1.0.tar.gz](https://cdn.mysql.com//Downloads/Connector-J/mysql-connector-j-9.1.0.tar.gz)
-     - Untuk Windows, Anda dapat mencari versi Windows di situs resmi MySQL.
+     - Untuk Windows, [mysql-connector-j-9.1.0.zip](https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-j-9.1.0.zip)
 
 2. **Buat Database**
    - Buat database `shopping` atau Anda bisa membuka file `/assets/db/shopping.db` untuk melihat query yang digunakan untuk membuatnya.
