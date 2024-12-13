@@ -26,6 +26,7 @@ import domain.model.users.UsersModel;
 import presentation.viewModel.auth.AuthViewModel;
 import presentation.viewModel.balance.BalanceViewModel;
 import presentation.viewModel.product.ProductViewModel;
+import utils.BaseFunc;
 
 public class AuthView extends JFrame {
     private JTextField usernameField;
@@ -205,7 +206,7 @@ public class AuthView extends JFrame {
         usernameField = new JTextField(20);
         passwordField = new JPasswordField(20);
         JComboBox<Role> roleComboBox = new JComboBox<>(Role.values());
-        JButton registerButton = new JButton("Register");
+    
         JButton backToLoginButton = new JButton("Back to Login");
 
         // Set max height and width for buttons and input fields
@@ -247,9 +248,9 @@ public class AuthView extends JFrame {
             return;
         }
     
-        authViewModel.login(username, password)
+        authViewModel.login(username, BaseFunc.sha256(password))
         .thenAccept(user -> {
-            System.out.println("user: " + user);  // log the entire user object
+            System.out.println("user: " + user); 
             if (user != null) {
                 System.out.println("User ID: " + user.getId());  // log the user ID
                 System.out.println("User Role: " + user.getRole());  // log the role
@@ -287,7 +288,7 @@ public class AuthView extends JFrame {
        String userId = "User-" + (int) (Math.random() * Integer.MAX_VALUE);
 
         Role selectedRole = (Role) roleComboBox.getSelectedItem();
-        UsersModel newUser = new UsersModel(userId, username, password, selectedRole);
+        UsersModel newUser = new UsersModel(userId, username, BaseFunc.sha256(password), selectedRole);
 
         authViewModel.register(newUser)
                 .thenAccept(isRegistered -> {
@@ -295,7 +296,7 @@ public class AuthView extends JFrame {
                         JOptionPane.showMessageDialog(this, "Registration Successful! Please log in.");
                         showLoginForm();
                         usernameField.setText(""); 
-                        passwordField.setText(""); // Clear the password field
+                        passwordField.setText(""); 
                     } else {
                         JOptionPane.showMessageDialog(this, "Registration failed. Try again.", "Error",
                                 JOptionPane.ERROR_MESSAGE);

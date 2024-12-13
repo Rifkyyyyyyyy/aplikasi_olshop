@@ -116,15 +116,15 @@ public class CartView extends JFrame {
    
 
      private JPanel createCartItem(ProductModel product, int quantity) {
-        JPanel card = new JPanel(new BorderLayout(5, 5)); // Kurangi jarak antar elemen di card
+        JPanel card = new JPanel(new BorderLayout(5, 5)); 
         card.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
-                BorderFactory.createEmptyBorder(5, 5, 5, 5) // Kurangi padding
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)
         ));
         card.setBackground(Color.WHITE);
     
         JLabel nameLabel = new JLabel(product.getName());
-        nameLabel.setFont(new Font("Arial", Font.PLAIN, 12)); // Kurangi ukuran font
+        nameLabel.setFont(new Font("Arial", Font.PLAIN, 12));
     
         JLabel quantityLabel = new JLabel("Jumlah: " + quantity);
         JLabel priceLabel = new JLabel("Harga: Rp." + (product.getPrice() * quantity));
@@ -133,20 +133,21 @@ public class CartView extends JFrame {
         detailsPanel.setLayout(new BoxLayout(detailsPanel, BoxLayout.Y_AXIS));
         detailsPanel.setBackground(Color.WHITE);
         detailsPanel.add(nameLabel);
-        detailsPanel.add(Box.createVerticalStrut(2)); // Kurangi spasi antar elemen
+        detailsPanel.add(Box.createVerticalStrut(2));
         detailsPanel.add(quantityLabel);
         detailsPanel.add(priceLabel);
     
         JCheckBox selectCheckBox = new JCheckBox("Pilih");
         selectCheckBox.setBackground(Color.WHITE);
-        selectCheckBox.addActionListener(e -> totalLabel.setText("Total: " + calculateTotal())); // Update total ketika checkbox berubah
+        selectCheckBox.addActionListener(e -> totalLabel.setText("Total: " + calculateTotal()));
         selectedItems.put(product, selectCheckBox);
     
         card.add(detailsPanel, BorderLayout.CENTER);
         card.add(selectCheckBox, BorderLayout.EAST);
     
-        // Atur preferensi tinggi card
-        card.setPreferredSize(new Dimension(0, 60)); // Sesuaikan tinggi card
+        card.setMinimumSize(new Dimension(0, 150));
+        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 150));
+        
     
         return card;
     }
@@ -228,6 +229,7 @@ public class CartView extends JFrame {
             // Tampilkan tampilan sukses transaksi
             TransactionSuccessView transactionSuccessView = new TransactionSuccessView(purchasedProducts, userView , balanceViewModel);
             transactionSuccessView.setVisible(true);
+            userView.cartLabel().setText("0");
     
             this.dispose(); // Tutup jendela checkout
     

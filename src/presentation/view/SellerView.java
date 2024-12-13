@@ -78,10 +78,11 @@ public class SellerView extends JFrame {
 
         JPanel headerPanel = new JPanel();
         headerPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        headerPanel.setBackground(Color.decode("#FFFFFF"));
         headerPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15)); 
         nameLabel = new JLabel("Selamat datang" + " " + user); 
       
-        balanceLabel = new JLabel("Saldo kamu Rp 0"); 
+        balanceLabel = new JLabel("Saldo penjualan kamu Rp 0.0"); 
 
         headerPanel.add(nameLabel);
         headerPanel.add(Box.createHorizontalStrut(20));
@@ -97,9 +98,12 @@ public class SellerView extends JFrame {
 
         // Button panel
         JPanel buttonPanel = new JPanel();
-        JButton addButton = new JButton("Tambah");
-        JButton updateButton = new JButton("Perbarui");
-        JButton deleteButton = new JButton("Hapus");
+        buttonPanel.setBackground(Color.decode("#FFFFFF"));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15)); 
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT)); 
+        JButton addButton = new JButton("Tambah produk");
+        JButton updateButton = new JButton("Perbarui produk");
+        JButton deleteButton = new JButton("Hapus produk");
 
         buttonPanel.add(addButton);
         buttonPanel.add(updateButton);
@@ -136,7 +140,7 @@ public class SellerView extends JFrame {
     private void loadSellerBalance() {
         balanceViewModel.getBalance(uid).thenAccept((balance) -> {
             SwingUtilities.invokeLater(() -> {
-                balanceLabel.setText("Saldo kamu Rp " + balance.getBalance()); // Update balance label
+                balanceLabel.setText("Saldo penjualan kamu Rp " + balance.getBalance()); // Update balance label
             });
         });
     }

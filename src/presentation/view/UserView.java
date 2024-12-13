@@ -5,7 +5,9 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
@@ -30,32 +32,48 @@ public class UserView extends JFrame {
     private final JPanel productPanel;
     private final BalanceViewModel balanceViewModel;
     private final JProgressBar progressBar;
+
     private final Map<ProductModel, Integer> cart; // Menyimpan produk dengan jumlah
     private final String user;
+
+    private final JLabel cartCountLabel = new JLabel("0"); 
+    
+
+
+    public JLabel cartLabel () {
+        return  this.cartCountLabel;
+    }
+
+
     /**
      * Konstruktor untuk menginisialisasi tampilan pengguna.
      * 
      * @param viewModel Model tampilan produk
      * @param user Nama pengguna yang akan ditampilkan
      */
-    public UserView(ProductViewModel viewModel, String user , BalanceViewModel view) {
+    public UserView(ProductViewModel viewModel, String user, BalanceViewModel view) {
         this.viewModel = viewModel;
         this.cart = new HashMap<>(); // Inisialisasi keranjang
         this.user = user;
         this.balanceViewModel = view;
-
+    
         setTitle("Tampilan Pengguna");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-
+    
         // Panel Header
         JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(Color.WHITE);
         headerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Menambahkan padding ke panel header
-
+    
         JLabel welcomeLabel = new JLabel("Halo, " + user + "!", SwingConstants.LEFT);
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 18));
-
+    
+        // Panel untuk ikon keranjang dan label count
+        JPanel cartPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+        cartPanel.setOpaque(false);
+    
         ImageIcon cartIcon = new ImageIcon("assets/cart.png"); // Ganti dengan path ikon keranjang
         JLabel cartLabel = new JLabel(cartIcon);
         cartLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -65,19 +83,28 @@ public class UserView extends JFrame {
                 openCartView(); // Membuka tampilan keranjang
             }
         });
-
+    
+        // Label untuk menampilkan jumlah item di keranjang
+       
+        cartCountLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        cartCountLabel.setForeground(Color.RED);
+    
+        // Menambahkan ikon keranjang dan label count ke panel cartPanel
+        cartPanel.add(cartLabel);
+        cartPanel.add(cartCountLabel);
+    
         headerPanel.add(welcomeLabel, BorderLayout.WEST);
-        headerPanel.add(cartLabel, BorderLayout.EAST);
+        headerPanel.add(cartPanel, BorderLayout.EAST);
         add(headerPanel, BorderLayout.NORTH);
-
+    
         // Panel Daftar Produk
         productPanel = new JPanel();
         productPanel.setLayout(new BoxLayout(productPanel, BoxLayout.Y_AXIS));
         productPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Menambahkan padding ke panel produk
-
+    
         JScrollPane scrollPane = new JScrollPane(productPanel);
         add(scrollPane, BorderLayout.CENTER);
-
+    
         // Panel Bawah dengan Progress Bar
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         progressBar = new JProgressBar();
@@ -85,11 +112,12 @@ public class UserView extends JFrame {
         progressBar.setVisible(false); // Menyembunyikan progress bar saat tidak digunakan
         bottomPanel.add(progressBar);
         add(bottomPanel, BorderLayout.SOUTH);
-
+    
         setLocationRelativeTo(null);
         loadAllProducts(); // Memuat produk saat aplikasi dimulai
+    
+       
     }
-
     public String userView () {
         return user;
     }
@@ -196,6 +224,7 @@ public class UserView extends JFrame {
                     JOptionPane.showMessageDialog(this, "Jumlah tidak valid. Masukkan nilai antara 1 dan " + currentStock + ".");
                 } else {
                     cart.put(product, cart.getOrDefault(product, 0) + quantity); // Menambahkan jumlah produk ke keranjang
+                    updateCounter();
                     JOptionPane.showMessageDialog(this, "Ditambahkan " + quantity + " " + product.getName() + " ke keranjang.");
                 }
             } catch (NumberFormatException ex) {
@@ -203,7 +232,32 @@ public class UserView extends JFrame {
             }
         }
     }
+    
+    private void updateCounter() {
+        int counter = 0;
+        System.out.println("Isi keranjang:");
+    
 
+        // Membuat list untuk menyimpan produk sementara
+        List<ProductModel> temp = new ArrayList<>();
+        System.out.println("cart: " + cart);
+    
+        // Iterasi melalui entry pada cart untuk menambahkan produk ke temp
+        for (Map.Entry<ProductModel, Integer> entry : cart.entrySet()) {
+            temp.add(entry.getKey()); // Menambahkan kunci (ProductModel) ke dalam temp
+        }
+    
+
+        while(counter < temp.size()){
+           counter += 1;
+        }
+ 
+      
+    
+        // Mengubah label count di panel cartPanel
+        cartCountLabel.setText(String.valueOf(counter));
+    }
+    
     /**
      * Metode untuk membuka tampilan keranjang belanja.
      */
