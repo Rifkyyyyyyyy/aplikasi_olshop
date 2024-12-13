@@ -1,3 +1,8 @@
+# View
+
+![2024-12-13-211942_1366x768_scrot](https://github.com/user-attachments/assets/c24bf14f-45f4-4996-94ce-81d835cfd820)
+
+
 # Deskripsi Proyek
 
 Proyek ini mengikuti arsitektur modular yang terstruktur dengan baik. Kode proyek diorganisir dalam berbagai folder berdasarkan fungsinya, yang memudahkan pemeliharaan dan pengembangan lebih lanjut. Aplikasi ini dibangun dengan prinsip pemisahan tanggung jawab yang jelas, sehingga memungkinkan pengembang untuk dengan mudah memahami dan mengembangkan aplikasi ini.
