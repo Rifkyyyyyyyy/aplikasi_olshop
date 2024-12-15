@@ -2,10 +2,16 @@ package presentation.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,27 +29,29 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
+import components.button.RoundedButton;
+import constant.style.ColorsApp;
 import domain.model.product.ProductModel;
+import presentation.viewModel.auth.AuthViewModel;
 import presentation.viewModel.balance.BalanceViewModel;
 import presentation.viewModel.product.ProductViewModel;
 
 public class UserView extends JFrame {
     private final ProductViewModel viewModel;
+    private final AuthViewModel authViewModel;
     private final JPanel productPanel;
     private final BalanceViewModel balanceViewModel;
     private final JProgressBar progressBar;
 
-    private final Map<ProductModel, Integer> cart; // Menyimpan produk dengan jumlah
+    private final Map<ProductModel, Integer> cart; 
     private final String user;
 
     private final JLabel cartCountLabel = new JLabel("0"); 
     
 
-
     public JLabel cartLabel () {
         return  this.cartCountLabel;
     }
-
 
     /**
      * Konstruktor untuk menginisialisasi tampilan pengguna.
@@ -51,73 +59,138 @@ public class UserView extends JFrame {
      * @param viewModel Model tampilan produk
      * @param user Nama pengguna yang akan ditampilkan
      */
-    public UserView(ProductViewModel viewModel, String user, BalanceViewModel view) {
+
+     public UserView(ProductViewModel viewModel, String user, BalanceViewModel view, AuthViewModel auth) {
         this.viewModel = viewModel;
-        this.cart = new HashMap<>(); // Inisialisasi keranjang
+        this.cart = new HashMap<>();
         this.user = user;
         this.balanceViewModel = view;
+        this.authViewModel = auth;
     
-        setTitle("Tampilan Pengguna");
+        setTitle("Homepage");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
     
-        // Panel Header
-        JPanel headerPanel = new JPanel(new BorderLayout());
-        headerPanel.setBackground(Color.WHITE);
-        headerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Menambahkan padding ke panel header
+        JPanel headerPanel = new JPanel();
+        headerPanel.setBackground(ColorsApp.LIGHT_GRAY);
+        headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.X_AXIS));
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
     
-        JLabel welcomeLabel = new JLabel("Halo, " + user + "!", SwingConstants.LEFT);
+        JLabel welcomeLabel = new JLabel("Halo, " + user + "!");
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
     
-        // Panel untuk ikon keranjang dan label count
-        JPanel cartPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
-        cartPanel.setOpaque(false);
+        JLabel logoLabel = new JLabel();
+        ImageIcon logoIcon = new ImageIcon("assets/logo2.png");
+        logoLabel.setIcon(logoIcon);
+        logoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
     
-        ImageIcon cartIcon = new ImageIcon("assets/cart.png"); // Ganti dengan path ikon keranjang
-        JLabel cartLabel = new JLabel(cartIcon);
+        JPanel cartPanel = new JPanel();
+        cartPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        cartPanel.setBackground(ColorsApp.LIGHT_GRAY2);
+        cartPanel.setLayout(new BoxLayout(cartPanel, BoxLayout.X_AXIS));
+    
+        ImageIcon cartIcon = new ImageIcon("assets/cart.png");
+        JLabel cartLabel = new JLabel();
+        Image scaledImage = cartIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        cartLabel.setIcon(new ImageIcon(scaledImage));
+        cartLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         cartLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         cartLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                openCartView(); // Membuka tampilan keranjang
+                openCartView();
             }
         });
     
-        // Label untuk menampilkan jumlah item di keranjang
-       
         cartCountLabel.setFont(new Font("Arial", Font.BOLD, 14));
         cartCountLabel.setForeground(Color.RED);
-    
-        // Menambahkan ikon keranjang dan label count ke panel cartPanel
         cartPanel.add(cartLabel);
+        cartPanel.add(Box.createHorizontalStrut(10));
         cartPanel.add(cartCountLabel);
     
-        headerPanel.add(welcomeLabel, BorderLayout.WEST);
-        headerPanel.add(cartPanel, BorderLayout.EAST);
+        headerPanel.add(welcomeLabel);
+        headerPanel.add(Box.createHorizontalGlue());
+        headerPanel.add(logoLabel);
+        headerPanel.add(Box.createHorizontalGlue());
+        headerPanel.add(cartPanel);
+    
         add(headerPanel, BorderLayout.NORTH);
     
-        // Panel Daftar Produk
         productPanel = new JPanel();
         productPanel.setLayout(new BoxLayout(productPanel, BoxLayout.Y_AXIS));
-        productPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Menambahkan padding ke panel produk
+        productPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     
         JScrollPane scrollPane = new JScrollPane(productPanel);
+        scrollPane.setBorder(null);
         add(scrollPane, BorderLayout.CENTER);
     
-        // Panel Bawah dengan Progress Bar
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         progressBar = new JProgressBar();
         progressBar.setIndeterminate(true);
-        progressBar.setVisible(false); // Menyembunyikan progress bar saat tidak digunakan
+        progressBar.setVisible(false);
         bottomPanel.add(progressBar);
+    
         add(bottomPanel, BorderLayout.SOUTH);
     
-        setLocationRelativeTo(null);
-        loadAllProducts(); // Memuat produk saat aplikasi dimulai
+        JPanel footerPanel = new JPanel();
+        footerPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(169, 169, 169)));
+        footerPanel.setBackground(ColorsApp.LIGHT_GRAY);
+        footerPanel.setLayout(new BorderLayout());
     
-       
+        JButton buttonPanel = new JButton();
+        ImageIcon logoutIcon = new ImageIcon("assets/logout.png");
+        Image scaledLogoutImage = logoutIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        buttonPanel.setIcon(new ImageIcon(scaledLogoutImage));
+    
+        buttonPanel.setContentAreaFilled(false);
+        buttonPanel.setBorderPainted(false);
+        buttonPanel.setFocusPainted(false);
+        buttonPanel.setPreferredSize(new Dimension(40, 50));
+        buttonPanel.setMaximumSize(new Dimension(40, 50));
+    
+        buttonPanel.addActionListener((ActionEvent e) -> {
+            logout();
+        });
+    
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        JLabel footerLabel = new JLabel("© " + currentYear + " Yoto app | All Rights Reserved");
+        footerLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        footerLabel.setOpaque(false);
+        footerLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+    
+        JPanel logoutPanel = new JPanel();
+        logoutPanel.setOpaque(false);
+        logoutPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        logoutPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        logoutPanel.add(buttonPanel);
+    
+        JPanel textPanel = new JPanel();
+        textPanel.setOpaque(false);
+        textPanel.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 15));
+        textPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        textPanel.add(footerLabel);
+    
+        footerPanel.add(logoutPanel, BorderLayout.WEST);
+        footerPanel.add(textPanel, BorderLayout.EAST);
+    
+        add(footerPanel, BorderLayout.SOUTH);
+    
+        setLocationRelativeTo(null);
+        loadAllProducts();
     }
+    
+    
+    private void logout() {
+        dispose();
+        AuthView authView = new AuthView(authViewModel, viewModel, balanceViewModel);
+        authView.display();
+    }
+ 
+    
     public String userView () {
         return user;
     }
@@ -128,15 +201,13 @@ public class UserView extends JFrame {
     private void loadAllProducts() {
         progressBar.setVisible(true);
         viewModel.getAllProducts().thenAccept(products -> {
-            productPanel.removeAll(); // Menghapus card sebelumnya
+            productPanel.removeAll();
             for (ProductModel product : products) {
                 JPanel productCard = createProductCard(product);
                 productPanel.add(productCard);
-    
-                // Menambahkan spacing antar card
-                productPanel.add(Box.createVerticalStrut(10)); // Jarak antar card 10px
+                productPanel.add(Box.createVerticalStrut(10));
             }
-            productPanel.revalidate(); // Menyegarkan tampilan
+            productPanel.revalidate();
             productPanel.repaint();
             progressBar.setVisible(false);
         }).exceptionally(e -> {
@@ -145,6 +216,7 @@ public class UserView extends JFrame {
             return null;
         });
     }
+    
 
     /**
      * Metode untuk memuat ulang produk dan memperbarui stok.
@@ -166,41 +238,42 @@ public class UserView extends JFrame {
         card.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
         card.setBackground(Color.WHITE);
     
-        // Menambahkan label Nama Produk
         JLabel nameLabel = new JLabel(product.getName());
-        nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        nameLabel.setFont(new Font("Arial", Font.BOLD, 16));
         card.add(nameLabel);
+        card.add(Box.createVerticalStrut(5));
     
-        // Menambahkan label Deskripsi Produk
         JLabel descriptionLabel = new JLabel("<html>" + product.getDescription() + "</html>");
+        descriptionLabel.setFont(new Font("Arial", Font.PLAIN, 12));
         card.add(descriptionLabel);
+        card.add(Box.createVerticalStrut(5));
     
-        // Menambahkan label Harga Produk
         JLabel priceLabel = new JLabel("Harga: Rp." + product.getPrice());
+        priceLabel.setFont(new Font("Arial", Font.BOLD, 14));
         card.add(priceLabel);
+        card.add(Box.createVerticalStrut(5));
     
-        // Menambahkan label Stok Produk
         JLabel stockLabel = new JLabel("Stok: " + product.getStock());
+        stockLabel.setFont(new Font("Arial", Font.PLAIN, 12));
         card.add(stockLabel);
-
+        card.add(Box.createVerticalStrut(5));
+    
         JLabel sellerLabel = new JLabel("Penjual: " + product.getSellerName());
+        sellerLabel.setFont(new Font("Arial", Font.PLAIN, 12));
         card.add(sellerLabel);
+        card.add(Box.createVerticalStrut(10));
     
-        // Menambahkan margin top sebelum tombol
-        card.add(Box.createVerticalStrut(10)); // Margin top 10px sebelum tombol
+        ActionListener listener = (ActionEvent e) -> {
+            addToCart(product);
+        };
+        RoundedButton aRoundedButton = new RoundedButton("Beli Produk", listener, 150, 40, ColorsApp.PRIMARY, ColorsApp.LIGHT_GRAY);
+        card.add(aRoundedButton);
     
-        // Tombol untuk menambahkan produk ke keranjang
-        JButton addToCartButton = new JButton("Tambahkan ke Keranjang");
-        addToCartButton.addActionListener(e -> addToCart(product)); // Menambah produk ke keranjang saat diklik
-        card.add(addToCartButton);
-    
-        // Menambahkan margin bottom pada card
-        card.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 10)); // Margin bottom 20px
+        card.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 10));
     
         return card;
     }
     
-  
     
 
     /**
@@ -211,7 +284,7 @@ public class UserView extends JFrame {
     private void addToCart(ProductModel product) {
         int currentStock = product.getStock();
         if (currentStock <= 0) {
-            JOptionPane.showMessageDialog(this, "Stok habis!"); // Menampilkan pesan jika stok habis
+            JOptionPane.showMessageDialog(this, "Yah Stok habis!"); 
             return;
         }
 
@@ -235,26 +308,16 @@ public class UserView extends JFrame {
     
     private void updateCounter() {
         int counter = 0;
-        System.out.println("Isi keranjang:");
-    
-
-        // Membuat list untuk menyimpan produk sementara
         List<ProductModel> temp = new ArrayList<>();
-        System.out.println("cart: " + cart);
-    
-        // Iterasi melalui entry pada cart untuk menambahkan produk ke temp
+        
         for (Map.Entry<ProductModel, Integer> entry : cart.entrySet()) {
-            temp.add(entry.getKey()); // Menambahkan kunci (ProductModel) ke dalam temp
+            temp.add(entry.getKey());
         }
     
-
-        while(counter < temp.size()){
-           counter += 1;
+        while (counter < temp.size()) {
+            counter += 1;
         }
- 
-      
     
-        // Mengubah label count di panel cartPanel
         cartCountLabel.setText(String.valueOf(counter));
     }
     

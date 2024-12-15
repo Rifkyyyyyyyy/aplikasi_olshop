@@ -6,6 +6,9 @@ public class ColorsApp {
 
     // Primary color (similar to Twitter's blue)
     public static final Color PRIMARY = new Color(0x1c2322); // Twitter Blue
+    public static final Color PRIMARY3 = new Color(0x3e4847); // Lebih terang dari #1c2322
+
+    
     
     // Secondary colors
     public static final Color SECONDARY = new Color(0x657786); // Greyish text color
@@ -29,4 +32,6 @@ public class ColorsApp {
 
 
     public static final Color PRIMARY2 = new Color(0x1DA1F2); // Twitter Blue
+    public static final Color LIGHT_GRAY = new Color(0xFAFAFA);
+    public static final Color LIGHT_GRAY2 = new Color(0xF5F5F5); // #f5f5f5
 }
