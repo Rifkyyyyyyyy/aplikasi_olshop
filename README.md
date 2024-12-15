@@ -1,6 +1,9 @@
 # View
 
-![2024-12-13-211942_1366x768_scrot](https://github.com/user-attachments/assets/c24bf14f-45f4-4996-94ce-81d835cfd820)
+![2024-12-15-103424_1366x768_scrot](https://github.com/user-attachments/assets/3309ed0d-af2f-4c1d-baf0-dac1a6919003)
+![2024-12-15-103440_1366x768_scrot](https://github.com/user-attachments/assets/d2c5fc6a-0270-4f62-91cb-272b909aa3d3)
+![2024-12-15-103537_1366x768_scrot](https://github.com/user-attachments/assets/ce3e0a22-1971-4eb2-a3d6-0734c87d353b)
+
 
 
 # Deskripsi Proyek
