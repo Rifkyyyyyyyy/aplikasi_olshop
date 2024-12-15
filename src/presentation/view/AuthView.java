@@ -26,6 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
 import components.button.RoundedButton;
@@ -66,13 +67,10 @@ public class AuthView extends JFrame {
         // Center frame and make it visible
         setLocationRelativeTo(null);
         setVisible(true);
-
-        // Initialize card layout for switching between login and register forms
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
         add(cardPanel, BorderLayout.CENTER);
 
-        // Show login form initially
         showLoginForm();
     }
 
@@ -211,12 +209,14 @@ public class AuthView extends JFrame {
 
    
 
-
     private void showRegisterForm() {
+        UIManager.put("ComboBox.border", BorderFactory.createEmptyBorder());
+    
         JPanel registerPanel = new JPanel();
         registerPanel.setLayout(new GridLayout(1, 2, 5, 5));
         registerPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
     
+        // Left Section
         JPanel leftSection = new JPanel();
         leftSection.setBackground(ColorsApp.PRIMARY);
         leftSection.setPreferredSize(new Dimension(0, this.getHeight()));
@@ -246,8 +246,8 @@ public class AuthView extends JFrame {
         JLabel descriptionText = new JLabel(
             "<html><div style='text-align: center;'>"
             + "Jadilah bagian dari Yoto App, tempat terbaik untuk mendapatkan produk berkualitas dengan harga terjangkau, "
-            + "atau memulai bisnis dengan potensi keuntungan yang besar," 
-            + "Sudah punya akun? Masuk sekarang untuk melanjutkan dan nikmati pengalaman belanja atau jualan yang lebih mudah! ."
+            + "atau memulai bisnis dengan potensi keuntungan yang besar,"
+            + "Sudah punya akun? Masuk sekarang untuk melanjutkan dan nikmati pengalaman belanja atau jualan yang lebih mudah!"
             + "</div></html>"
         );
         descriptionText.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -261,6 +261,7 @@ public class AuthView extends JFrame {
         leftSection.add(logoLabel);
         leftSection.add(footerLabelPanel);
     
+        // Right Section
         JPanel rightSection = new JPanel();
         rightSection.setLayout(new GridLayout(0, 1));
         rightSection.setBackground(Color.WHITE);
@@ -280,7 +281,8 @@ public class AuthView extends JFrame {
         setComponentSize(registerPasswordField, 50, 300);
     
         registerPasswordField.setBorder(BorderFactory.createCompoundBorder(
-            registerPasswordField.getBorder(), BorderFactory.createEmptyBorder(0, 0, 20, 0)));
+            registerPasswordField.getBorder(), BorderFactory.createEmptyBorder(0, 0, 20, 0)
+        ));
     
         registerUsernameField.setFont(new Font("Arial", Font.PLAIN, 16));
         registerPasswordField.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -298,75 +300,68 @@ public class AuthView extends JFrame {
         rightSection.add(createFieldPanel("Username:", registerUsernameField));
         rightSection.add(createFieldPanel("Password:", registerPasswordField));
     
-   
-  
+        // Role ComboBox
         Role[] roles = {Role.BUYER, Role.SELLER};
-JComboBox<Role> roleComboBox = new JComboBox<>(roles);
-roleComboBox.setFont(new Font("Arial", Font.PLAIN, 16));
-roleComboBox.setBackground(new Color(0, 0, 0, 0)); // Transparan
-roleComboBox.setOpaque(false);
+        JComboBox<Role> roleComboBox = new JComboBox<>(roles);
+        roleComboBox.setFont(new Font("Arial", Font.PLAIN, 16));
+        roleComboBox.setBackground(new Color(0, 0, 0, 0)); // Transparan
+        roleComboBox.setOpaque(false);
+    
+        // Setting Border
+        roleComboBox.setBorder(BorderFactory.createCompoundBorder(
+            new RadiusBorder(15),
+            BorderFactory.createLineBorder(new Color(0, 0, 0, 0), 1) // Border transparan
+        ));
+    
+        // Renderer for Role ComboBox
+        roleComboBox.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(
+                JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus
+            ) {
+                JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+    
+                if (value instanceof Role role) {
+                    String formattedText = BaseFunc.capitalizeFirstLetter(role.name());
+                    label.setText(formattedText);
+                }
+    
+                label.setOpaque(false);
+                label.setBorder(new EmptyBorder(0, 0, 0, 0));
+    
+                return label;
+            }
+        });
+    
+        roleComboBox.setFocusable(false);
 
-// Menggunakan Border Compound untuk radius dengan border transparan
-roleComboBox.setBorder(BorderFactory.createCompoundBorder(
-    new RadiusBorder(15),
-    BorderFactory.createLineBorder(new Color(0, 0, 0, 0), 1) // Border transparan
-));
-
-// Menambahkan renderer untuk menampilkan teks yang diformat
-roleComboBox.setRenderer(new DefaultListCellRenderer() {
-    @Override
-    public Component getListCellRendererComponent(
-        JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus
-    ) {
-        // Panggil renderer asli dan pastikan itu adalah JLabel
-        JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-
-        if (value instanceof Role role) {
-            // Format teks sesuai kebutuhan
-            String formattedText = BaseFunc.capitalizeFirstLetter(role.name());
-            label.setText(formattedText);
+        
+    
+        for (int i = 0; i < roleComboBox.getComponentCount(); i++) {
+            Component comp = roleComboBox.getComponent(i);
+    
+            if (comp instanceof JComponent jComp) {
+                jComp.setBorder(new EmptyBorder(0, 0, 0, 0));
+                jComp.setOpaque(false);
+            }
+    
+            if (comp instanceof JLabel) {
+                comp.setVisible(false);
+            }
+    
+            if (comp instanceof AbstractButton button) {
+                button.setBorderPainted(false);
+                button.setFocusPainted(false);
+            }
         }
-
-        // Hapus warna latar belakang dan border
-        label.setOpaque(false);
-        label.setBorder(new EmptyBorder(0, 0, 0, 0));
-
-        return label;
-    }
-});
-
-// Menghilangkan border biru (fokus) pada tombol dropdown dan komponen lainnya
-roleComboBox.setFocusable(false); // Menghindari border biru fokus
-
-// Iterasi untuk menghapus border pada komponen internal JComboBox
-for (int i = 0; i < roleComboBox.getComponentCount(); i++) {
-    Component comp = roleComboBox.getComponent(i);
-
-    // Jika komponen adalah instance dari JComponent
-    if (comp instanceof JComponent jComp) {
-        jComp.setBorder(new EmptyBorder(0, 0, 0, 0)); // Menghapus border
-        jComp.setOpaque(false); // Menghapus latar belakang
-    }
-
-    if(comp instanceof  JLabel){
-        comp.setVisible(false);
-    }
-
-    // Jika komponen adalah instance dari AbstractButton (misalnya tombol dropdown)
-    if (comp instanceof AbstractButton button) {
-        button.setBorderPainted(false); // Menghapus border pada button
-        button.setFocusPainted(false); // Menghilangkan border biru pada tombol dropdown
-    }
-}
-
-// Menonaktifkan traversal fokus
-roleComboBox.setFocusTraversalKeysEnabled(false);
-
-
+    
+        roleComboBox.setFocusTraversalKeysEnabled(false);
+    
         rightSection.add(createFieldPanel("Role:", roleComboBox));
     
         rightSection.add(Box.createVerticalStrut(20));
     
+        // Buttons Panel
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
         buttonsPanel.setOpaque(false);
@@ -378,29 +373,23 @@ roleComboBox.setFocusTraversalKeysEnabled(false);
     
         cardPanel.add(registerPanel, "register");
     
-        ActionListener backToLogin = (ActionEvent e) -> {
-            showLoginForm();
-        };
+        // Action Listeners
+        ActionListener backToLogin = (ActionEvent e) -> showLoginForm();
         ActionListener registerListener = (ActionEvent e) -> {
-            handleRegister(roleComboBox , registerUsernameField.getText() , new String(registerPasswordField.getPassword()));
+            handleRegister(roleComboBox, registerUsernameField.getText(), new String(registerPasswordField.getPassword()));
         };
     
-        RoundedButton loginButton = new RoundedButton("Kembali ke menu login", backToLogin, 180, 55,    new Color(240, 240, 240),
-        Color.BLACK );
+        RoundedButton loginButton = new RoundedButton(
+            "Kembali ke menu login", backToLogin, 180, 55, new Color(240, 240, 240), Color.BLACK
+        );
     
         RoundedButton registerButton = new RoundedButton(
-            "Register",
-            registerListener,
-            180,
-            55,
-            ColorsApp.PRIMARY2, Color.white
+            "Register", registerListener, 180, 55, ColorsApp.PRIMARY2, Color.white
         );
-      
+    
         buttonsPanel.add(registerButton);
         buttonsPanel.add(Box.createHorizontalStrut(20));
         buttonsPanel.add(loginButton);
-       
-     
     
         cardLayout.show(cardPanel, "register");
     }

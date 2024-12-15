@@ -124,6 +124,8 @@ public class UserView extends JFrame {
         productPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     
         JScrollPane scrollPane = new JScrollPane(productPanel);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); // Hide horizontal scrollbar
+scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);   // Hide vertical scrollbar
         scrollPane.setBorder(null);
         add(scrollPane, BorderLayout.CENTER);
     
