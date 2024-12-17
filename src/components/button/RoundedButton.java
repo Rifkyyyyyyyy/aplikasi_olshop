@@ -10,26 +10,20 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.border.EmptyBorder;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionListener;
 
 public class RoundedButton extends JButton {
+    private final int radius = 8; 
 
-    private final int radius = 8; // Radius for rounded corners
-
-    // Constructor with text, action listener, width, height, background color, and text color
     public RoundedButton(String text, ActionListener listener, int width, int height, Color backgroundColor, Color textColor) {
-        super(text); // Set the button text
-        setFocusPainted(false); // Remove the focus border
-        setContentAreaFilled(false); // Don't fill the content area with the default background
-        setOpaque(true); // Make the button opaque (so the background color is visible)
-        setBackground(backgroundColor); // Set background color (from argument)
-        setForeground(textColor); // Set text color (from argument)
-        setBorder(new EmptyBorder(10, 20, 10, 20)); // Add padding around the text
-        setPreferredSize(new Dimension(width, height)); // Set the width and height of the button
+        super(text); 
+        setFocusPainted(false); 
+        setContentAreaFilled(false); 
+        setOpaque(true); 
+        setBackground(backgroundColor);
+        setForeground(textColor); 
+        setBorder(new EmptyBorder(10, 20, 10, 20)); 
+        setPreferredSize(new Dimension(width, height)); 
         
-        // Add the action listener
         addActionListener(listener);
     }
 

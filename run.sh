@@ -16,7 +16,7 @@ CLASSPATH="$LIB_DIR/*:$BIN_DIR"
 
 mkdir -p $BIN_DIR
 
-echo "Mengompilasi kode Java..."
+echo "Mengcompile ....."
 javac -d $BIN_DIR -cp $CLASSPATH $SRC_DIR/*.java
 
 

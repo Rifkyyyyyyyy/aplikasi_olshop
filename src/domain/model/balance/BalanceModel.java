@@ -22,6 +22,8 @@ public final class BalanceModel {
     }
 
 
+   
+
  
     public String getUserId() {
         return userId;

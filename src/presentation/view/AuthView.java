@@ -16,6 +16,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -168,8 +169,25 @@ public class AuthView extends JFrame {
     
         rightSection.add(createFieldPanel("Username:", usernameField));
         rightSection.add(createFieldPanel("Password:", passwordField));
-        rightSection.add(Box.createVerticalStrut(20));
     
+        //Show Password Checkbox
+        JCheckBox showPasswordCheckbox = new JCheckBox("Show Password");
+        showPasswordCheckbox.setOpaque(false);
+        showPasswordCheckbox.setFont(new Font("Arial", Font.PLAIN, 12));
+        showPasswordCheckbox.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        //ActionListener untuk checkbox
+        showPasswordCheckbox.addActionListener(e -> {
+            if (showPasswordCheckbox.isSelected()) {
+                passwordField.setEchoChar((char) 0); // Show password
+            } else {
+                passwordField.setEchoChar('\u2022'); // Hide password
+            }
+        });
+
+        rightSection.add(showPasswordCheckbox);  // Add checkbox below password field
+        rightSection.add(Box.createVerticalStrut(20));  // Space between checkbox and buttons
+        
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
         buttonsPanel.setOpaque(false);
@@ -276,16 +294,34 @@ public class AuthView extends JFrame {
     
         JTextField registerUsernameField = new JTextField(20);
         JPasswordField registerPasswordField = new JPasswordField(20);
-    
+        JPasswordField confirmPasswordField = new JPasswordField(20);
+
+        
+
+        // Show password checkbox
+        JCheckBox showPasswordCheckBox = new JCheckBox("Show Password");
+        showPasswordCheckBox.setOpaque(false);
+        showPasswordCheckBox.setBackground(new Color(0, 0, 0, 0));
+        showPasswordCheckBox.setBorderPainted(false);
+        showPasswordCheckBox.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        
+
         setComponentSize(registerUsernameField, 50, 300);
         setComponentSize(registerPasswordField, 50, 300);
+        setComponentSize(confirmPasswordField, 50, 300);
     
         registerPasswordField.setBorder(BorderFactory.createCompoundBorder(
             registerPasswordField.getBorder(), BorderFactory.createEmptyBorder(0, 0, 20, 0)
         ));
+
+        confirmPasswordField.setBorder(BorderFactory.createCompoundBorder(
+        confirmPasswordField.getBorder(), BorderFactory.createEmptyBorder(0, 0, 20, 0)
+    ));
     
         registerUsernameField.setFont(new Font("Arial", Font.PLAIN, 16));
         registerPasswordField.setFont(new Font("Arial", Font.PLAIN, 16));
+        confirmPasswordField.setFont(new Font("Arial", Font.PLAIN, 16));
     
         registerUsernameField.setBorder(BorderFactory.createCompoundBorder(
             new RadiusBorder(15),
@@ -296,9 +332,16 @@ public class AuthView extends JFrame {
             new RadiusBorder(15),
             new EmptyBorder(5, 5, 5, 5)
         ));
+
+        confirmPasswordField.setBorder(BorderFactory.createCompoundBorder(
+        new RadiusBorder(15),
+        new EmptyBorder(5, 5, 5, 5)
+    ));
     
         rightSection.add(createFieldPanel("Username:", registerUsernameField));
         rightSection.add(createFieldPanel("Password:", registerPasswordField));
+        rightSection.add(createFieldPanel("Confirm Password:", confirmPasswordField));
+        rightSection.add(showPasswordCheckBox);
     
         // Role ComboBox
         Role[] roles = {Role.BUYER, Role.SELLER};
@@ -320,8 +363,9 @@ public class AuthView extends JFrame {
                 JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus
             ) {
                 JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-    
-                if (value instanceof Role role) {
+
+                if (value instanceof Role) {
+                    Role role = (Role) value;
                     String formattedText = BaseFunc.capitalizeFirstLetter(role.name());
                     label.setText(formattedText);
                 }
@@ -340,7 +384,8 @@ public class AuthView extends JFrame {
         for (int i = 0; i < roleComboBox.getComponentCount(); i++) {
             Component comp = roleComboBox.getComponent(i);
     
-            if (comp instanceof JComponent jComp) {
+            if (comp instanceof JComponent) {
+                JComponent jComp = (JComponent) comp;
                 jComp.setBorder(new EmptyBorder(0, 0, 0, 0));
                 jComp.setOpaque(false);
             }
@@ -349,7 +394,8 @@ public class AuthView extends JFrame {
                 comp.setVisible(false);
             }
     
-            if (comp instanceof AbstractButton button) {
+            if (comp instanceof AbstractButton) {
+                AbstractButton button = (AbstractButton) comp;
                 button.setBorderPainted(false);
                 button.setFocusPainted(false);
             }
@@ -376,8 +422,18 @@ public class AuthView extends JFrame {
         // Action Listeners
         ActionListener backToLogin = (ActionEvent e) -> showLoginForm();
         ActionListener registerListener = (ActionEvent e) -> {
-            handleRegister(roleComboBox, registerUsernameField.getText(), new String(registerPasswordField.getPassword()));
-        };
+            String password = new String(registerPasswordField.getPassword());
+            String confirmPassword = new String(confirmPasswordField.getPassword());
+        
+         // Validate password and confirm password
+         if (!password.equals(confirmPassword)) {
+            JOptionPane.showMessageDialog(null, "Password dan konfirmasi password tidak cocok!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+
+        handleRegister(roleComboBox, registerUsernameField.getText(), password);
+    };
     
         RoundedButton loginButton = new RoundedButton(
             "Kembali ke menu login", backToLogin, 180, 55, new Color(240, 240, 240), Color.BLACK
@@ -392,10 +448,22 @@ public class AuthView extends JFrame {
         buttonsPanel.add(loginButton);
     
         cardLayout.show(cardPanel, "register");
-    }
-    
-  
 
+
+showPasswordCheckBox.addActionListener(e -> {
+    if (showPasswordCheckBox.isSelected()) {
+        // Menampilkan password untuk kedua field
+        registerPasswordField.setEchoChar((char) 0);
+        confirmPasswordField.setEchoChar((char) 0);
+    } else {
+        // Menyembunyikan password untuk kedua field
+        registerPasswordField.setEchoChar('*');
+        confirmPasswordField.setEchoChar('*');
+    }
+});
+
+}
+    
     private void handleLogin() {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
@@ -491,7 +559,7 @@ public class AuthView extends JFrame {
         label.setFont(new Font("Arial", Font.PLAIN, 14)); 
         label.setForeground(Color.BLACK);  
         label.setOpaque(false);
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);  
         label.setBorder(new EmptyBorder(0, 0, 10, 0)); 
     
         fieldPanel.add(label); 

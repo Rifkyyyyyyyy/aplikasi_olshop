@@ -654,7 +654,7 @@ public class SellerView extends JFrame {
 
             String productId = "Yoto-" + (int) (Math.random() * Integer.MAX_VALUE);
             ProductModel product = new ProductModel(productId, name, description, price, stock, uid, user);
-            productViewModel.addProduct(product).thenRun(this::loadProducts);
+            productViewModel.addProduct(product).thenRun(this::loadProducts);  
     
             // Tampilkan pesan sukses
             JOptionPane.showMessageDialog(this, "Produk berhasil ditambahkan.", "Sukses", JOptionPane.INFORMATION_MESSAGE);
